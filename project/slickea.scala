@@ -5,6 +5,18 @@ import com.typesafe.sbt.SbtGit._
 
 object slickea extends Build {
   
+  val welcomeString = """
+welcome to build enuma elish !
+       _   _          _                   
+      | | (_)        | |                  
+ ___  | |  _    ___  | | __   ___    __ _ 
+/ __| | | | |  / __| | |/ /  / _ \  / _` |
+\__ \ | | | | | (__  |   <  |  __/ | (_| |
+|___/ |_| |_|  \___| |_|\_\  \___|  \__,_|
+"""
+  
+  println(welcomeString)
+  
   lazy val slickea = Project(
 
     id = "slickea",
@@ -36,7 +48,10 @@ object slickea extends Build {
       "mysql" % "mysql-connector-java" % "5.1.34" % "test",
       "com.github.tminglei" %% "slick-pg" % "0.9.0-beta" % "test",
       "org.joda" % "joda-convert" % "1.7" % "test",
-      "com.vividsolutions" % "jts" % "1.13" % "test"
+      "com.vividsolutions" % "jts" % "1.13" % "test",
+      "org.scalatest" %% "scalatest" % "2.2.4" % "test",
+      "com.h2database" % "h2" % "1.4.187" % "test",
+      "org.slf4j" % "slf4j-simple" % "1.7.12" % "test"
 
     ),
 

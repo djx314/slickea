@@ -1,2 +1,2 @@
 # slickea
-Use Scala macro to generate TableQuery depends on the JPA annotation defined on the case class.
+Generate slick TableQuery depends on the case class by scala macro and jpa annotation.

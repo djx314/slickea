@@ -3,13 +3,15 @@ package org.xarcher.ea.test.models
 import slick.collection.heterogeneous._
 import java.sql.Timestamp
 import java.util.Date
+import org.xarcher.ea.test.base.SlickBase
 
-trait Repo {
+trait Repo extends SlickBase {
 
-  val profile: slick.driver.JdbcProfile
   import profile.api._
   
-  val db: Database
+  def articleCreate = dbRun(articleTable.schema.create)
+  def insertArticle(article: Article) = dbRun(articleTable += article)
+  def insertArticles(articles: List[Article]) = dbRun(articleTable ++= articles)
   
   val articleTable = TableQuery[ArticleTable]
 

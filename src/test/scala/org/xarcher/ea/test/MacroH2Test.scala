@@ -5,12 +5,12 @@ import org.h2.jdbcx.JdbcDataSource
 import org.xarcher.ea.test.models._
 import org.xarcher.ea.test.base.SlickBase
 
-class H2Test extends FlatSpec with Matchers with Repo with BeforeAndAfterAll {
+class MacroH2Test extends FlatSpec with Matchers with MacroRepo with BeforeAndAfterAll {
 
   override val profile = slick.driver.H2Driver
-
-  override val h2DbName = "h2miaotest"
   
+  override val h2DbName = "h2commontest"
+
   override def beforeAll() = {
     articleCreate
   }

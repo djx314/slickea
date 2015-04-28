@@ -122,7 +122,7 @@ class TableMacroImpl(val c: Context) {
   }
 
   private def hlistConcat[T: Liftable ](elems: Iterable[T]) = {
-    val HNil = q"slick.collection.heterogeneous.HNil": Tree
+    val HNil = q"_root_.slick.collection.heterogeneous.HNil": Tree
     elems.toList.reverse.foldLeft(HNil) { (list, c) =>
       q"$c :: $list"
     }

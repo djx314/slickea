@@ -43,6 +43,7 @@ welcome to build enuma elish !
       //project dependencies
       "com.typesafe.slick" %% "slick" % "3.0.0-RC3",
       "org.scala-lang" % "scala-compiler" % scalaVersion.value,
+      "org.hibernate" % "hibernate-entitymanager" % "5.0.0.Beta1",
 
       //test dependencies
       "com.typesafe.play" %% "play-json" % "2.3.8" % "test",

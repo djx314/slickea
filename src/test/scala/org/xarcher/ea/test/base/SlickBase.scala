@@ -15,7 +15,6 @@ trait SlickBase {
   lazy val db = {
     val datasource = new JdbcDataSource()
     datasource.setUrl(s"jdbc:h2:mem:${h2DbName};DB_CLOSE_DELAY=-1")
-	println(profile)
     Database.forDataSource(datasource)
   }
 

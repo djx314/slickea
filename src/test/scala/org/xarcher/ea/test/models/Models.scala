@@ -3,12 +3,6 @@ package org.xarcher.ea.test.models
 import java.sql.Timestamp
 import java.util.Date
 
-case class User(
-  id: Option[Long],
-  userName: String,
-  userAge: Int
-)
-
 case class Article(
   id: Option[Long],
   account: Option[Long],

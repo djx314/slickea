@@ -1,6 +1,5 @@
 package org.xarcher.ea.test.models
 
-import slick.collection.heterogeneous._
 import java.sql.Timestamp
 import java.util.Date
 import org.xarcher.ea.test.base.SlickBase
@@ -131,7 +130,7 @@ trait Repo extends SlickBase {
         DividePercent ::
         BlogID ::
         NewsID ::
-        HNil
+        slick.collection.heterogeneous.HNil
       ).shaped <> (
         { case x => Article(
           x(0),
@@ -248,7 +247,7 @@ trait Repo extends SlickBase {
             x.DividePercent ::
             x.BlogID ::
             x.NewsID ::
-            HNil
+            slick.collection.heterogeneous.HNil
           ))
         })
       )

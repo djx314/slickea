@@ -37,23 +37,21 @@ class TableMacroImpl(val c: Context) {
     }
     val generatedCols = genColumns(info, notDefinedFields)
     val allColNames =  info.productFields.map(_.name)
-    val mapping = if(allColNames.size <= 22) genSimpleMapping(info, allColNames) else genHListMapping(info, allColNames)
+    val mapping = /*if(allColNames.size <= 22) genSimpleMapping(info, allColNames) else*/genHListMapping(info, allColNames)
     q"""
-      import slick.collection.heterogeneous._
       $mods class $tpname(tag: Tag) extends Table[${info.productType}](tag, $tableName) {
         ..$stats
         ..$generatedCols
         $mapping
       }
-      val ${tpname.toTermName} = TableQuery[${tpname}]
       """
-
+     //val ${tpname.toTermName} = TableQuery[${tpname}]
   }
 
-  private def genSimpleMapping(info: TableInfo, columns: Iterable[TermName]) = {
+  /*private def genSimpleMapping(info: TableInfo, columns: Iterable[TermName]) = {
     val pCompType = info.productCompanionType.typeSymbol.name.toTermName
     q"def * = (..$columns) <> ((${pCompType}.apply _).tupled, ${pCompType}.unapply)"
-  }
+  }*/
 
   private def genHListMapping(info: TableInfo, columns: Iterable[TermName]) = {
     val hlist = hlistConcat(columns)
@@ -124,7 +122,7 @@ class TableMacroImpl(val c: Context) {
   }
 
   private def hlistConcat[T: Liftable ](elems: Iterable[T]) = {
-    val HNil = q"HNil": Tree
+    val HNil = q"slick.collection.heterogeneous.HNil": Tree
     elems.toList.reverse.foldLeft(HNil) { (list, c) =>
       q"$c :: $list"
     }

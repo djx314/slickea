@@ -30,7 +30,7 @@ class TableMacroImpl(val c: Context) {
   private def genCode(classDef: ClassDef) = {
     val q"$mods class $tpname[..$tparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = classDef
     val info = extractTableInfo()
-    val tableName = Literal(Constant(getTableName(info, tpname.decodedName.toString)))
+    val tableName = Literal(Constant(getTableName(info)))
     val definedColumns = getDefinedColumns(stats)
     val notDefinedFields = info.productFields.filterNot {
       case f => definedColumns.contains(f.name.decodedName.toString)
@@ -111,14 +111,14 @@ class TableMacroImpl(val c: Context) {
     }
   }
 
-  private def getTableName(info: TableInfo, tpName: String): String = {
+  private def getTableName(info: TableInfo): String = {
     def decodeAnnotateParam(param: Tree) = {
       val q"$fname = $fv" = param
       fname.toString -> fv
     }
     info.annotationParams.map(decodeAnnotateParam(_)).collectFirst {
       case ("tableName", Literal(Constant(name: String))) if name != "" => name
-    }.getOrElse(snakify(tpName))
+    }.getOrElse(snakify(info.productType.typeSymbol.name.decodedName.toString))
   }
 
   private def hlistConcat[T: Liftable ](elems: Iterable[T]) = {
@@ -133,7 +133,8 @@ class TableMacroImpl(val c: Context) {
   }
 
   private def snakify(name: String) = {
-    "([a-z\\d])([A-Z])".r.replaceAllIn(name, "$1_$2").toLowerCase()
+    //"(?<!^)([A-Z\\d])".r.replaceAllIn(name, "_$1").toLowerCase()
+    "([a-z\\d])([A-Z])".r.replaceAllIn(name, "$1_$2").toLowerCase
   }
   
 }

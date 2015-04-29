@@ -2,9 +2,16 @@ package org.xarcher.ea.test.models
 
 import java.sql.Timestamp
 import java.util.Date
+import javax.persistence.Entity
+import javax.persistence.Column
+import javax.persistence.Id
 
+@Entity
 case class Article(
+  @Id
+  @Column(name = "id")
   id: Option[Long],
+  @Column(name = "account")
   account: Option[Long],
   userType: String,
   ArticleID: Option[Long] = Option(2333.toLong),

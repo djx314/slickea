@@ -30,6 +30,8 @@ welcome to build enuma elish !
   
   .settings(addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full): _*)
 
+  .enablePlugins(com.typesafe.sbt.GitBranchPrompt)
+
   .settings(
 
     name := "slickea",

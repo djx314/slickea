@@ -21,10 +21,12 @@ class TableMacroImpl(val c: Context) {
   )
 
   def impl(annottees: c.Expr[Any]*): c.Expr[Any] = annottees.map(_.tree) match {
-    case (classDecl: ClassDef) :: Nil =>
+    case (classDecl: ClassDef) :: Nil => {
       c.Expr(genCode(classDecl))
-    case decl =>
+    }
+    case decl => {
       c.abort(c.enclosingPosition, "Underlying class must not be top-level and without companion")
+    }
   }
 
   private def genCode(classDef: ClassDef) = {
@@ -37,7 +39,7 @@ class TableMacroImpl(val c: Context) {
     }
     val generatedCols = genColumns(info, notDefinedFields)
     val allColNames =  info.productFields.map(_.name)
-    val mapping = /*if(allColNames.size <= 22) genSimpleMapping(info, allColNames) else*/genHListMapping(info, allColNames)
+    val mapping = genHListMapping(info, allColNames)
     q"""
       $mods class $tpname(tag: Tag) extends Table[${info.productType}](tag, $tableName) {
         ..$stats
@@ -45,13 +47,7 @@ class TableMacroImpl(val c: Context) {
         $mapping
       }
       """
-     //val ${tpname.toTermName} = TableQuery[${tpname}]
   }
-
-  /*private def genSimpleMapping(info: TableInfo, columns: Iterable[TermName]) = {
-    val pCompType = info.productCompanionType.typeSymbol.name.toTermName
-    q"def * = (..$columns) <> ((${pCompType}.apply _).tupled, ${pCompType}.unapply)"
-  }*/
 
   private def genHListMapping(info: TableInfo, columns: Iterable[TermName]) = {
     val hlist = hlistConcat(columns)
@@ -84,14 +80,16 @@ class TableMacroImpl(val c: Context) {
 
   private def extractTableInfo() = {
     val (pType, pCompType, params) =  c.macroApplication match {
-      case  q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" =>
+      case  q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" => {
         val productType = typeOfTree(paramTypeTree)
         val productCompanionType = productType.companion
         (productType, productCompanionType, Nil)
-      case  q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" =>
+      }
+      case  q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" => {
         val productType = typeOfTree(paramTypeTree)
         val productCompanionType = productType.companion
         (productType, productCompanionType, params)
+      }
     }
     val productFields = getProductFields(pType)
     TableInfo(pType, pCompType, productFields, params)

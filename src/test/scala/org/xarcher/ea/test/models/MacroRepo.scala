@@ -19,7 +19,3 @@ trait MacroRepo extends SlickBase {
   val articleTable = TableQuery[ArticleTable]
 
 }
-
-import slick.driver.H2Driver.api._
-@table[Article](tableName = "aabb_table")
-class ArticleTable

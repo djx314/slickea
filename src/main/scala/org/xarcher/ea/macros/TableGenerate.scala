@@ -91,13 +91,32 @@ class TableMacroImpl(val c: Context) {
         (productType, productCompanionType, params)
       }
     }
+
     val productFields = getProductFields(pType)
+
+    println(pType.decls.collect {
+      case param: TermSymbol if param.isCaseAccessor && (param.isVal || param.isVal) => {
+        println(param)
+        val columnNamesList = for {
+          extr <- param.annotations if extr.tree.tpe  <:< c.weakTypeOf[javax.persistence.Column]
+          q"name = ${Literal(Constant(str: String))}" <- extr.tree.children.tail
+        } yield {
+          str
+        }
+
+        val columnName = columnNamesList.headOption.getOrElse(param.name.toString)
+        columnName
+
+    } })
+
     TableInfo(pType, pCompType, productFields, params)
   }
 
   private def getProductFields(productTpe: Type) = {
     productTpe.decls.collect {
-      case m: MethodSymbol if m.isCaseAccessor => m
+      case m: MethodSymbol if m.isCaseAccessor => {
+        m
+      }
     }
   }
 

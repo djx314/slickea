@@ -20,6 +20,7 @@ case class Article(
   id: Option[Long],
   @Column(name = "account")
   account: Option[Long],
+  @Column(name = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
   userType: String,
   ArticleID: Option[Long] = Option(2333.toLong),
   ChannelID: Long = 6666,

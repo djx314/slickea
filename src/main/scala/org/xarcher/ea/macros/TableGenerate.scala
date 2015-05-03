@@ -96,7 +96,6 @@ class TableMacroImpl(val c: Context) {
 
     println(pType.decls.collect {
       case param: TermSymbol if param.isCaseAccessor && (param.isVal || param.isVal) => {
-        println(param)
         val columnNamesList = for {
           extr <- param.annotations if extr.tree.tpe  <:< c.weakTypeOf[javax.persistence.Column]
           q"name = ${Literal(Constant(str: String))}" <- extr.tree.children.tail

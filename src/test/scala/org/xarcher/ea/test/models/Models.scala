@@ -6,11 +6,11 @@ import javax.persistence.Entity
 import javax.persistence.Column
 import javax.persistence.Id
 
-import org.xarcher.ea.macros.table
+import org.xarcher.ea.macros.JpaGenerate
 
 import profile.api._
 
-@table[Article](tableName = "macro_article_table")
+@JpaGenerate[Article](tableName = "macro_article_table")
 class GlobalArticleTable
 
 @Entity

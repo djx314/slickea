@@ -5,7 +5,7 @@ import scala.reflect._
 import scala.language.experimental.macros
 import scala.annotation.StaticAnnotation
 
-class table[T](tableName: String = "") extends StaticAnnotation {
+class JpaGenerate[T](tableName: String = "") extends StaticAnnotation {
   def macroTransform(annottees: Any*): Any = macro TableMacroImpl.impl
 }
 

@@ -21,3 +21,4 @@ project/plugins/project/
 /sbt
 /sbt.bat
 .idea
+/bin/

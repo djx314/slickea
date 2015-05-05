@@ -9,16 +9,16 @@ class JpaGenerate[T](tableName: String = "") extends StaticAnnotation {
   def macroTransform(annottees: Any*): Any = macro TableMacroImpl.impl
 }
 
-class TableMacroImpl(val c: Context) {
+class TableMacroImpl(override val c: Context) extends GenerateColunm {
 
   import c.universe._
 
-  case class TableInfo(
+  /*case class TableInfo(
     productType: Type,
     productCompanionType: Type,
     productFields: Iterable[MethodSymbol],
     annotationParams: Iterable[Tree]
-  )
+  )*/
 
   def impl(annottees: c.Expr[Any]*): c.Expr[Any] = annottees.map(_.tree) match {
     case (classDecl: ClassDef) :: Nil => {
@@ -37,19 +37,21 @@ class TableMacroImpl(val c: Context) {
     val notDefinedFields = info.productFields.filterNot {
       case f => definedColumns.contains(f.name.decodedName.toString)
     }
-    val generatedCols = genColumns(info, notDefinedFields)
+    //val generatedCols = genColumns(info, notDefinedFields)
     val allColNames =  info.productFields.map(_.name)
-    val mapping = genHListMapping(info, allColNames)
-    q"""
+    val mapping = genHListMapping//(info, allColNames)
+    val aa = q"""
       $mods class $tpname(tag: Tag) extends Table[${info.productType}](tag, $tableName) {
         ..$stats
-        ..$generatedCols
+        ..$genColunms
         $mapping
       }
       """
+    println(aa)
+    aa
   }
 
-  private def genHListMapping(info: TableInfo, columns: Iterable[TermName]) = {
+  /*private def genHListMapping(info: TableInfo, columns: Iterable[TermName]) = {
     val hlist = hlistConcat(columns)
     val pCompType = info.productCompanionType
     val pType = info.productType
@@ -58,9 +60,9 @@ class TableMacroImpl(val c: Context) {
     val toProduct = q"{case x => new $pType(..$columnElems)}"
     val fromProduct = q"{x: $pType => Option($productHList)}"
     q"def * = ($hlist).shaped <> ($toProduct, $fromProduct)"
-  }
+  }*/
 
-  private def genColumns(info: TableInfo, notDefined: Iterable[MethodSymbol]) = {
+  /*private def genColumns(info: TableInfo, notDefined: Iterable[MethodSymbol]) = {
     notDefined.map{ f =>
       val fName = f.name
       val fType = f.returnType
@@ -76,7 +78,7 @@ class TableMacroImpl(val c: Context) {
         """
       }
     }
-  }
+  }*/
 
   private def extractTableInfo() = {
     val (pType, pCompType, params) =  c.macroApplication match {
@@ -93,20 +95,6 @@ class TableMacroImpl(val c: Context) {
     }
 
     val productFields = getProductFields(pType)
-
-    println(pType.decls.collect {
-      case param: TermSymbol if param.isCaseAccessor && (param.isVal || param.isVal) => {
-        val columnNamesList = for {
-          extr <- param.annotations if extr.tree.tpe  <:< c.weakTypeOf[javax.persistence.Column]
-          q"name = ${Literal(Constant(str: String))}" <- extr.tree.children.tail
-        } yield {
-          str
-        }
-
-        val columnName = columnNamesList.headOption.getOrElse(param.name.toString)
-        columnName
-
-    } })
 
     TableInfo(pType, pCompType, productFields, params)
   }
@@ -137,16 +125,16 @@ class TableMacroImpl(val c: Context) {
     }.getOrElse(snakify(info.productType.typeSymbol.name.decodedName.toString))
   }
 
-  private def hlistConcat[T: Liftable ](elems: Iterable[T]) = {
+  /*private def hlistConcat[T: Liftable ](elems: Iterable[T]) = {
     val HNil = q"_root_.slick.collection.heterogeneous.HNil": Tree
     elems.toList.reverse.foldLeft(HNil) { (list, c) =>
       q"$c :: $list"
     }
-  }
+  }*/
 
-  private def typeOfTree(tree: Tree) = {
+  /*private def typeOfTree(tree: Tree) = {
     c.typecheck(q"??? : $tree").tpe
-  }
+  }*/
 
   private def snakify(name: String) = {
     //"(?<!^)([A-Z\\d])".r.replaceAllIn(name, "_$1").toLowerCase()

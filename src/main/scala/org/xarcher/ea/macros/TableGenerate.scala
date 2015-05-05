@@ -47,7 +47,7 @@ class TableMacroImpl(override val c: Context) extends GenerateColunm {
         $mapping
       }
       """
-    println(aa)
+    //println(aa)
     aa
   }
 

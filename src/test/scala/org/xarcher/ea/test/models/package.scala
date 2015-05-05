@@ -9,11 +9,16 @@ import scala.language.existentials
 import slick.collection.heterogeneous._
 import scala.language.reflectiveCalls
 
+import org.xarcher.ea.macros.JpaGenerate
+
 package object models {
 
   val profile = slick.driver.H2Driver
 
   import profile.api._
+  
+  @JpaGenerate[Article](tableName = "macro_article_table")
+  class GlobalArticleTable
   
   val globalArticleTable = TableQuery[GlobalArticleTable]
 

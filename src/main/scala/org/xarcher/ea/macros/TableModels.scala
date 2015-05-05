@@ -50,9 +50,15 @@ trait GenerateColunm {
           extr <- param.annotations if extr.tree.tpe <:< c.weakTypeOf[javax.persistence.Column]
           q"name = ${Literal(Constant(str: String))}" <- extr.tree.children.tail
         } yield str
-
+        
         val columnName = columnNamesList.headOption.getOrElse(param.name.toString).trim
 
+        println((for {
+          extr <- param.annotations if extr.tree.tpe <:< c.weakTypeOf[javax.persistence.Column]
+        } yield extr).mkString("\n"))
+        println(param.annotations)
+        println(columnName)
+        
         TableModels(
           propertyName = param.name.toString.trim,
           propertyType = param.typeSignature,

@@ -8,10 +8,10 @@ import javax.persistence.Id
 
 import org.xarcher.ea.macros.JpaGenerate
 
-import profile.api._
+/*import profile.api._
 
 @JpaGenerate[Article](tableName = "macro_article_table")
-class GlobalArticleTable
+class GlobalArticleTable*/
 
 @Entity
 case class Article(

@@ -32,32 +32,12 @@ trait GenerateColunm {
 
   def extractColunmInfo = {
 
-    val (pType, pCompType, params) =  c.macroApplication match {
-      case  q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" => {
-        println("1" * 100)
-        val productType = typeOfTree(paramTypeTree)
-        val productCompanionType = productType.companion
-        (productType, productCompanionType, Nil)
-      }
-      case  q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" => {
-        println("2" * 100)
-        val productType = typeOfTree(paramTypeTree)
-        val productCompanionType = productType.companion
-        (productType, productCompanionType, params)
-      }
-    }
+    val q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" = c.macroApplication
 
-    //println(paramTypeTree)
-    val q"new $annotationTp11e[$paramTypeTree11](..$params11).$method11(..$methodParams11)" = c.macroApplication
+    val productType11 = c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe
 
-    println(paramTypeTree11.isType)
-    println(paramTypeTree11.isEmpty)
-    println(paramTypeTree11.isDef)
-    println(paramTypeTree11.isTerm)
-    println(paramTypeTree11.symbol)
-    println(c.typecheck(q"??? :$paramTypeTree11").tpe)
-    (c.typecheck(q"??? :$paramTypeTree11").tpe).decls.collect {
-      case param: TermSymbol if param.isCaseAccessor && (param.isVal || param.isVal) => {
+    productType11.decls.collect {
+      case param: TermSymbol if param.isCaseAccessor && (param.isVal || param.isVar) => {
       //case param if param.isMethod && param.asMethod.isCaseAccessor => {
         val columnNamesList = for {
           extr <- param.annotations if extr.tree.tpe <:< c.weakTypeOf[javax.persistence.Column]
@@ -65,11 +45,7 @@ trait GenerateColunm {
         } yield str
         
         val columnName = columnNamesList.headOption.getOrElse(param.name.toString).trim
-        println(param.annotations)
-        println((for {
-          extr <- param.annotations/*if extr.tree.tpe <:< c.weakTypeOf[javax.persistence.Column]*/
-        } yield extr).mkString("\n"))
-        
+
         TableModels(
           propertyName = param.name.toString.trim,
           propertyType = param.typeSignature,
@@ -85,7 +61,7 @@ trait GenerateColunm {
   def genColunms = {
     colunmsInfos.map(s => {
       q"""
-         def ${TermName(s.columnDefName)} = column[${s.propertyType}](${s.columnName})
+         def `${TermName(s.columnDefName)}` = column[${s.propertyType}](${s.columnName})
         """
     })
   }
@@ -97,7 +73,7 @@ trait GenerateColunm {
   def hlistConcat[T: Liftable](elems: Iterable[T]) = {
     val HNil = q"_root_.slick.collection.heterogeneous.HNil": Tree
     elems.toList.reverse.foldLeft(HNil) { (list, c) =>
-      q"$c :: $list"
+      q"`$c` :: $list"
     }
   }
 

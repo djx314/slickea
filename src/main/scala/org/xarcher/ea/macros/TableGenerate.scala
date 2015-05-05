@@ -33,22 +33,21 @@ class TableMacroImpl(override val c: Context) extends GenerateColunm {
     val q"$mods class $tpname[..$tparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = classDef
     val info = extractTableInfo()
     val tableName = Literal(Constant(getTableName(info)))
-    val definedColumns = getDefinedColumns(stats)
-    val notDefinedFields = info.productFields.filterNot {
+    //val definedColumns = getDefinedColumns(stats)
+    /*val notDefinedFields = info.productFields.filterNot {
       case f => definedColumns.contains(f.name.decodedName.toString)
-    }
+    }*/
     //val generatedCols = genColumns(info, notDefinedFields)
-    val allColNames =  info.productFields.map(_.name)
+    //val allColNames =  info.productFields.map(_.name)
     val mapping = genHListMapping//(info, allColNames)
-    val aa = q"""
+    val tableQ = q"""
       $mods class $tpname(tag: Tag) extends Table[${info.productType}](tag, $tableName) {
         ..$stats
         ..$genColunms
         $mapping
       }
       """
-    //println(aa)
-    aa
+    tableQ
   }
 
   /*private def genHListMapping(info: TableInfo, columns: Iterable[TermName]) = {
@@ -121,7 +120,9 @@ class TableMacroImpl(override val c: Context) extends GenerateColunm {
       fname.toString -> fv
     }
     info.annotationParams.map(decodeAnnotateParam(_)).collectFirst {
-      case ("tableName", Literal(Constant(name: String))) if name != "" => name
+      case ("tableName", Literal(Constant(name: String))) if name != "" => {
+        name
+      }
     }.getOrElse(snakify(info.productType.typeSymbol.name.decodedName.toString))
   }
 

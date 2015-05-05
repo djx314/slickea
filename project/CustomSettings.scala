@@ -18,6 +18,7 @@ object CustomSettings {
   
   def extAliasInfo = List(
     Option("xeclipse" -> "eclipse with-source=true skip-parents=false"),
+    Option("c" -> ";clean;test:compile"),
     if (OSName.isWindows)
       Option(windowsGitInitCommandMap)
     else if (OSName.isLinux)

@@ -3,6 +3,7 @@ package org.xarcher.ea.macros
 import scala.reflect.macros.blackbox.Context
 import scala.reflect._
 import scala.language.experimental.macros
+import scala.reflect.runtime.universe._
 /**
  * Created by djx314 on 2015/5/5.
  */
@@ -33,31 +34,41 @@ trait GenerateColunm {
 
     val (pType, pCompType, params) =  c.macroApplication match {
       case  q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" => {
+        println("1" * 100)
         val productType = typeOfTree(paramTypeTree)
         val productCompanionType = productType.companion
         (productType, productCompanionType, Nil)
       }
       case  q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" => {
+        println("2" * 100)
         val productType = typeOfTree(paramTypeTree)
         val productCompanionType = productType.companion
         (productType, productCompanionType, params)
       }
     }
 
-    pType.decls.collect {
+    //println(paramTypeTree)
+    val q"new $annotationTp11e[$paramTypeTree11](..$params11).$method11(..$methodParams11)" = c.macroApplication
+
+    println(paramTypeTree11.isType)
+    println(paramTypeTree11.isEmpty)
+    println(paramTypeTree11.isDef)
+    println(paramTypeTree11.isTerm)
+    println(paramTypeTree11.symbol)
+    println(c.typecheck(q"??? :$paramTypeTree11").tpe)
+    (c.typecheck(q"??? :$paramTypeTree11").tpe).decls.collect {
       case param: TermSymbol if param.isCaseAccessor && (param.isVal || param.isVal) => {
+      //case param if param.isMethod && param.asMethod.isCaseAccessor => {
         val columnNamesList = for {
           extr <- param.annotations if extr.tree.tpe <:< c.weakTypeOf[javax.persistence.Column]
           q"name = ${Literal(Constant(str: String))}" <- extr.tree.children.tail
         } yield str
         
         val columnName = columnNamesList.headOption.getOrElse(param.name.toString).trim
-
-        println((for {
-          extr <- param.annotations if extr.tree.tpe <:< c.weakTypeOf[javax.persistence.Column]
-        } yield extr).mkString("\n"))
         println(param.annotations)
-        println(columnName)
+        println((for {
+          extr <- param.annotations/*if extr.tree.tpe <:< c.weakTypeOf[javax.persistence.Column]*/
+        } yield extr).mkString("\n"))
         
         TableModels(
           propertyName = param.name.toString.trim,

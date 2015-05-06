@@ -1,4 +1,4 @@
-package org.xarcher.ea.macros
+package org.xarcher.ea.jpa.macros
 
 import scala.reflect.macros.blackbox.Context
 import scala.reflect._
@@ -21,13 +21,6 @@ trait GenerateColunm {
     extPro: List[String] = Nil
   )
 
-  case class TableInfo(
-    productType: Type,
-    productCompanionType: Type,
-    productFields: Iterable[MethodSymbol],
-    annotationParams: Iterable[Tree]
-  )
-
   lazy val colunmsInfos = extractColunmInfo
 
   def extractColunmInfo = {
@@ -43,7 +36,7 @@ trait GenerateColunm {
           extr <- param.annotations if extr.tree.tpe <:< c.weakTypeOf[javax.persistence.Column]
           q"name = ${Literal(Constant(str: String))}" <- extr.tree.children.tail
         } yield str
-        
+
         val columnName = columnNamesList.headOption.getOrElse(param.name.toString).trim
 
         TableModels(
@@ -66,8 +59,17 @@ trait GenerateColunm {
     })
   }
 
-  def typeOfTree(tree: Tree) = {
-    c.typecheck(q"??? : $tree").tpe
+  protected def productType = {
+    val typeTree =  c.macroApplication match {
+      case  q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" => {
+        paramTypeTree
+      }
+      case  q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" => {
+        paramTypeTree
+      }
+    }
+
+    c.typecheck(typeTree.duplicate, c.TYPEmode).tpe
   }
 
   def hlistConcat[T: Liftable](elems: Iterable[T]) = {
@@ -79,25 +81,12 @@ trait GenerateColunm {
 
   def genHListMapping = {
 
-    val (pType, pCompType, params) =  c.macroApplication match {
-      case  q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" => {
-        val productType = typeOfTree(paramTypeTree)
-        val productCompanionType = productType.companion
-        (productType, productCompanionType, Nil)
-      }
-      case  q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" => {
-        val productType = typeOfTree(paramTypeTree)
-        val productCompanionType = productType.companion
-        (productType, productCompanionType, params)
-      }
-    }
-
     val hlist = hlistConcat(colunmsInfos.map(s => TermName(s.columnDefName)))
 
     val columnElems = (0 until colunmsInfos.size).map(i => q"x($i)")
     val productHList = hlistConcat(colunmsInfos.map(n =>q"x.${TermName(n.propertyName)}"))
-    val toProduct = q"{case x => new $pType(..$columnElems)}"
-    val fromProduct = q"{x: $pType => Option($productHList)}"
+    val toProduct = q"{case x => new $productType(..$columnElems)}"
+    val fromProduct = q"{x: $productType => Option($productHList)}"
     q"def * = ($hlist).shaped <> ($toProduct, $fromProduct)"
 
   }

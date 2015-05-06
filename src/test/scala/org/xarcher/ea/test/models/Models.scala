@@ -2,7 +2,7 @@ package org.xarcher.ea.test.models
 
 import javax.persistence.{Column, Id}
 import org.h2.jdbcx.JdbcDataSource
-import org.xarcher.ea.macros.JpaGenerate
+import org.xarcher.ea.jpa.macros.JpaGenerate
 import scala.annotation.meta.field
 
 import slick.driver.H2Driver.api._

@@ -65,6 +65,35 @@ welcome to build enuma elish !
       )
     }
 
+  ) dependsOn slickeaTest aggregate slickeaTest
+
+  lazy val slickeaTest = Project(
+
+    id = "slickeaTest",
+
+    base = file("./slickeaTest"),
+    settings = Defaults.coreDefaultSettings
+
+  )
+
+  .settings(CustomSettings.customSettings: _*)
+
+  .settings(addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full): _*)
+
+  .settings(
+
+    name := "slickea-test",
+
+    scalaVersion := "2.11.6",
+
+    scalacOptions ++= Seq("-feature", "-deprecation"),
+
+    libraryDependencies ++= Seq(
+
+      "org.hibernate" % "hibernate-entitymanager" % "5.0.0.Beta1"
+
+    )
+
   )
 
 }

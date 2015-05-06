@@ -17,13 +17,3 @@ object SilckUtils {
     Await.result(db.run(a), Duration.Inf)
 
 }
-
-case class Simpleaa(
-                     @(Id@field)
-                     @(Column@field)(name = "i22222d")
-                     i2312d: Option[Long],
-                     @(Column@field)(name = "namen3333imei")
-                     nafsdfsdfme: String,
-                     @(Column@field)(name = "miaodsfsdfsdfe")
-                     nisfsfck: Option[String]
-                     )

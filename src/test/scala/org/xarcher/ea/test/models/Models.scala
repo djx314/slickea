@@ -11,19 +11,6 @@ import slick.driver.H2Driver.api._
  * Created by djx314 on 2015/5/5.
  */
 
-/*case class Simple(
-  @(Id@field)
-  @(Column@field)(name = "id")
-  id: Option[Long],
-  @(Column@field)(name = "namenimei")
-  name: String,
-  @(Column@field)(name = "miaode")
-  nick: Option[String]
-)*/
-
-@JpaGenerate[Simpleaa](tableName = "dsfwfe")
-class SimpleTablea()
-
 @JpaGenerate[Simple](tableName = "miaomiaomiaomiao")
 class SimpleTable()
 

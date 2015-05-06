@@ -1,7 +1,6 @@
 package org.xarcher.ea.test.models
 
 import javax.persistence.{Column, Id}
-
 import scala.annotation.meta.field
 
 case class Simple(

@@ -27,22 +27,22 @@ trait GenerateColunm {
 
     val q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" = c.macroApplication
 
-    val productType11 = c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe
+    val productType = c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe
 
-    productType11.decls.collect {
+    productType.decls.collect {
       case param: TermSymbol if param.isCaseAccessor && (param.isVal || param.isVar) => {
-      //case param if param.isMethod && param.asMethod.isCaseAccessor => {
         val columnNamesList = for {
           extr <- param.annotations if extr.tree.tpe <:< c.weakTypeOf[javax.persistence.Column]
           q"name = ${Literal(Constant(str: String))}" <- extr.tree.children.tail
         } yield str
 
         val columnName = columnNamesList.headOption.getOrElse(param.name.toString).trim
+        val proName = param.name.toString.trim
 
         TableModels(
-          propertyName = param.name.toString.trim,
+          propertyName = proName,
           propertyType = param.typeSignature,
-          columnDefName = columnName,
+          columnDefName = proName,
           columnName = columnName,
           extPro = Nil
         )

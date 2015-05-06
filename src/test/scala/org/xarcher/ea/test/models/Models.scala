@@ -40,6 +40,6 @@ class SimpleTest extends FlatSpec with Matchers with BeforeAndAfterAll {
     val simple_1 = Simple(None, "英莉莉", Option("safgregrtgh"))
     val simple_2 = Simple(None, "金闪闪", Option("safgregrtgh"))
     slickRun(articleTable ++= List(simple_1, simple_2)) should be(Option(2))
-    println(slickRun(articleTable.map(_.bbbbbbvcegehrth).result))
+    println(slickRun(articleTable.map(_.nick).result))
   }
 }

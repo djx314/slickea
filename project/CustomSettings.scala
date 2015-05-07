@@ -18,8 +18,10 @@ object CustomSettings {
   
   def extAliasInfo = List(
     Option("xeclipse" -> "eclipse with-source=true skip-parents=false"),
-    Option("c" -> ";slickeaTest/clean;slickea/clean;slickea/test:compile"),
-    Option("t" -> ";slickeaTest/clean;slickea/clean;slickea/test"),
+    Option("c" -> ";simTest/clean;slickea/clean;slickea/test:compile"),
+    Option("t" -> ";simTest/clean;slickea/clean;slickea/test"),
+    Option("fc" -> ";fullTest/clean;simTest/clean;slickea/clean;fullTest/test:compile"),
+    Option("ft" -> ";fullTest/clean;simTest/clean;slickea/clean;fullTest/test"),
     if (OSName.isWindows)
       Option(windowsGitInitCommandMap)
     else if (OSName.isLinux)

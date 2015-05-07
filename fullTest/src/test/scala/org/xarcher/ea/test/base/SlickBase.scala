@@ -1,6 +1,5 @@
 package org.xarcher.ea.test.base
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import org.h2.jdbcx.JdbcDataSource

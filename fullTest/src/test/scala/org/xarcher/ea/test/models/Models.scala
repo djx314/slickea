@@ -6,7 +6,7 @@ import javax.persistence.Entity
 import javax.persistence.Column
 import javax.persistence.Id
 
-import org.xarcher.ea.macros.JpaGenerate
+import org.xarcher.ea.jpa.macros.JpaGenerate
 
 import profile.api._
 
@@ -23,7 +23,7 @@ trait aabbcc {
 
 }
 
-@Entity
+/*@Entity
 case class Article(
   @Id
   @Column(name = "id")
@@ -85,4 +85,4 @@ case class Article(
   DividePercent: Int = 2333,
   BlogID: Int = 2333,
   NewsID: Option[Long] = Option(2333.toLong)
-)
+)*/

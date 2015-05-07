@@ -3,11 +3,6 @@ package org.xarcher.ea.test
 import org.h2.jdbcx.JdbcDataSource
 import org.xarcher.ea.test.util.SlickUtil
 
-import scala.language.existentials
-import scala.language.reflectiveCalls
-
-import org.xarcher.ea.macros.JpaGenerate
-
 package object models {
 
   val profile = slick.driver.H2Driver

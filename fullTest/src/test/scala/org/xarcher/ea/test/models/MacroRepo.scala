@@ -1,7 +1,7 @@
 package org.xarcher.ea.test.models
 
 import org.xarcher.ea.test.base.SlickBase
-import org.xarcher.ea.macros.JpaGenerate
+import org.xarcher.ea.jpa.macros.JpaGenerate
 
 trait MacroRepo extends SlickBase {
 

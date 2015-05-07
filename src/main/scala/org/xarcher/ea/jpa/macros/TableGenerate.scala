@@ -1,15 +1,14 @@
 package org.xarcher.ea.jpa.macros
 
 import scala.reflect.macros.blackbox.Context
-import scala.reflect._
 import scala.language.experimental.macros
 import scala.annotation.StaticAnnotation
 
 class JpaGenerate[T](tableName: String = "") extends StaticAnnotation {
-  def macroTransform(annottees: Any*): Any = macro TableMacroImpl.impl
+  def macroTransform(annottees: Any*): Any = macro JpaTableMacroImpl.impl
 }
 
-class TableMacroImpl(override val c: Context) extends GenerateColunm {
+class JpaTableMacroImpl(override val c: Context) extends GenerateColunm {
 
   import c.universe._
 
@@ -22,7 +21,7 @@ class TableMacroImpl(override val c: Context) extends GenerateColunm {
     }
   }
 
-  private def genCode(classDef: ClassDef) = {
+  protected def genCode(classDef: ClassDef) = {
     val q"$mods class $tpname[..$tparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = classDef
     val tableName = Literal(Constant(getTableName))
     val mapping = genHListMapping
@@ -36,28 +35,26 @@ class TableMacroImpl(override val c: Context) extends GenerateColunm {
     tableQ
   }
 
-  private def getTableName: String = {
+  protected def genColunms =
+    columnInfos.map(s => {
+      q"""
+         def `${TermName(s.columnDefName)}` = column[${s.propertyType}](${s.columnName}, ..${s.extPro})
+        """
+    })
 
-    val params =  c.macroApplication match {
-      case  q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" =>
-        Nil
-      case  q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" =>
-        params
-    }
+  protected def genHListMapping = {
 
-    def decodeAnnotateParam(param: Tree) = {
-      val q"$fname = $fv" = param
-      fname.toString -> fv
-    }
-    params.map(decodeAnnotateParam(_)).collectFirst {
-      case ("tableName", Literal(Constant(name: String))) if name != "" => {
-        name
-      }
-    }.getOrElse(snakify(productType.typeSymbol.name.decodedName.toString))
-  }
+    val hlist = hlistConcat(columnInfos.map(s => TermName(s.columnDefName)))
 
-  private def snakify(name: String) = {
-    "([a-z\\d])([A-Z])".r.replaceAllIn(name, "$1_$2").toLowerCase
+    val columnElems = (0 until columnInfos.size).map(i => q"x($i)")
+    val toProduct = q"{ case x => new $productType(..$columnElems) }"
+
+    val productHList = hlistConcat(columnInfos.map(n =>q"x.${TermName(n.propertyName)}"))
+
+    val fromProduct = q"{ x: $productType => Option($productHList) }"
+
+    q"def * = ($hlist).shaped <> ($toProduct, $fromProduct)"
+
   }
 
 }

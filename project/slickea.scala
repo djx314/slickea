@@ -16,6 +16,8 @@ welcome to build enuma elish !
 """
   
   println(welcomeString)
+
+  val paradiseCompilerPlugin = addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
   
   lazy val slickea = Project(
 
@@ -28,7 +30,7 @@ welcome to build enuma elish !
 
   .settings(CustomSettings.customSettings: _*)
   
-  .settings(addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full): _*)
+  .settings(paradiseCompilerPlugin: _*)
 
   .enablePlugins(com.typesafe.sbt.GitBranchPrompt)
 
@@ -65,24 +67,24 @@ welcome to build enuma elish !
       )
     }
 
-  ) dependsOn slickeaTest aggregate slickeaTest
+  ) dependsOn simTest aggregate simTest
 
-  lazy val slickeaTest = Project(
+  lazy val simTest = Project(
 
-    id = "slickeaTest",
+    id = "simTest",
 
-    base = file("./slickeaTest"),
+    base = file("./simTest"),
     settings = Defaults.coreDefaultSettings
 
   )
 
   .settings(CustomSettings.customSettings: _*)
 
-  .settings(addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full): _*)
+  .settings(paradiseCompilerPlugin: _*)
 
   .settings(
 
-    name := "slickea-test",
+    name := "slickea-simple-test",
 
     scalaVersion := "2.11.6",
 
@@ -95,5 +97,32 @@ welcome to build enuma elish !
     )
 
   )
+
+  lazy val slickeaFullTest = Project(
+
+    id = "fullTest",
+
+    base = file("./fullTest"),
+    settings = Defaults.coreDefaultSettings
+
+  )
+  .settings(paradiseCompilerPlugin: _*)
+  .settings(
+    name := "slickea-full-test",
+    scalaVersion := "2.11.6",
+    libraryDependencies ++= Seq(
+      //test dependencies
+      "com.typesafe.play" %% "play-json" % "2.3.8" % "test",
+      "org.cvogt" %% "play-json-extensions" % "0.2" % "test",
+      "mysql" % "mysql-connector-java" % "5.1.34" % "test",
+      "com.github.tminglei" %% "slick-pg" % "0.9.0-beta" % "test",
+      "org.joda" % "joda-convert" % "1.7" % "test",
+      "com.vividsolutions" % "jts" % "1.13" % "test",
+      "org.scalatest" %% "scalatest" % "2.2.4" % "test",
+      "com.h2database" % "h2" % "1.4.187" % "test",
+      "org.slf4j" % "slf4j-simple" % "1.7.12" % "test"
+    )
+  )
+  .settings(CustomSettings.customSettings: _*) dependsOn slickea
 
 }

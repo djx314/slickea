@@ -21,7 +21,7 @@ class JpaTableMacroImpl(override val c: Context) extends GenerateColunm {
     }
   }
 
-  private def genCode(classDef: ClassDef) = {
+  protected def genCode(classDef: ClassDef) = {
     val q"$mods class $tpname[..$tparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = classDef
     val tableName = Literal(Constant(getTableName))
     val mapping = genHListMapping
@@ -38,7 +38,7 @@ class JpaTableMacroImpl(override val c: Context) extends GenerateColunm {
   protected def genColunms =
     columnInfos.map(s => {
       q"""
-         def `${TermName(s.columnDefName)}` = column[${s.propertyType}](${s.columnName})
+         def `${TermName(s.columnDefName)}` = column[${s.propertyType}](${s.columnName}, ..${s.extPro})
         """
     })
 

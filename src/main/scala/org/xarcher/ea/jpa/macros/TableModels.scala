@@ -18,7 +18,7 @@ trait GenerateColunm {
     propertyType: Type,
     columnDefName: String,
     columnName: String,
-    extPro: List[String] = Nil
+    extPro: List[Tree] = Nil
   )
 
   lazy val (productType, annotationParams) = c.macroApplication match {
@@ -33,9 +33,6 @@ trait GenerateColunm {
     productType.decls.collect {
       case param: TermSymbol if param.isCaseAccessor && (param.isVal || param.isVar) => {
 
-        param.annotations.collectFirst{ case extr if extr.tree.tpe <:< c.weakTypeOf[javax.persistence.Column] => extr }
-          .getOrElse(c.abort(c.enclosingPosition, "Every case accessor must be annotationed by javax.persistence.Column"))
-
         val columnNamesList = for {
           extr <- param.annotations if extr.tree.tpe <:< c.weakTypeOf[javax.persistence.Column]
           q"name = ${Literal(Constant(str: String))}" <- extr.tree.children.tail
@@ -44,12 +41,20 @@ trait GenerateColunm {
         val columnName = columnNamesList.headOption.getOrElse(param.name.toString).trim
         val proName = param.name.toString.trim
 
+        val primaryKey = param.annotations.collectFirst{ case s if s.tree.tpe <:< c.weakTypeOf[javax.persistence.Id] => {
+          q"O.PrimaryKey": Tree
+        } }
+
+        val autoInc = if (primaryKey.isDefined) Option(q"O.AutoInc": Tree) else None
+
+        val extParams = List(primaryKey, autoInc).collect { case Some(s) => s }
+
         TableModels(
           propertyName = proName,
           propertyType = param.typeSignature,
           columnDefName = proName,
           columnName = columnName,
-          extPro = Nil
+          extPro = extParams
         )
 
       }

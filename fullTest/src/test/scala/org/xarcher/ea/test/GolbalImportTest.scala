@@ -11,7 +11,7 @@ class GlobalImportTest extends FlatSpec with Matchers with BeforeAndAfterAll {
     h2SlickRun(globalArticleTable.schema.create)
   }
 
-  "Golbal user repo" should "insert into article table" in {
+  "22+ columns" should "insert into article table" in {
     val article_1 = Article(None, Option(11111111), "userType")
     h2SlickRun(globalArticleTable += article_1) should be(1)
   }

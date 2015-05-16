@@ -45,7 +45,8 @@ welcome to build enuma elish !
   .settings(CustomSettings.customSettings: _*)
   .settings(
     name := "model4Test",
-    libraryDependencies ++= CustomSettings.jpaDependencies
+    libraryDependencies ++= CustomSettings.jpaDependencies,
+    compileOrder in Compile := CompileOrder.JavaThenScala
   ) dependsOn slickea
 
   lazy val slickeaSimpleTest = Project(

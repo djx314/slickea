@@ -7,5 +7,5 @@ import org.xarcher.ea.macros.jpa.JpaJavaGenerate
  * Created by djx314 on 15-5-17.
  */
 
-@JpaJavaGenerate[Simple]
+@JpaJavaGenerate[Servant]
 class ScalaSimple

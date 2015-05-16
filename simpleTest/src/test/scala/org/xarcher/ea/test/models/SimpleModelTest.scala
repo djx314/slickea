@@ -1,9 +1,7 @@
 package org.xarcher.ea.test.models
 
-import javax.persistence.{Column, Id}
 import org.h2.jdbcx.JdbcDataSource
 import org.xarcher.ea.jpa.macros.JpaGenerate
-import scala.annotation.meta.field
 
 import slick.driver.H2Driver.api._
 
@@ -15,9 +13,9 @@ import slick.driver.H2Driver.api._
 class SimpleTable()
 
 import org.scalatest._
-class SimpleTest extends FlatSpec with Matchers with BeforeAndAfterAll {
+class SimpleModelTest extends FlatSpec with Matchers with BeforeAndAfterAll {
 
-  lazy val articleTable = TableQuery[SimpleTable]
+  lazy val simpleTable = TableQuery[SimpleTable]
 
   lazy val db = {
     val datasource = new JdbcDataSource()
@@ -28,18 +26,18 @@ class SimpleTest extends FlatSpec with Matchers with BeforeAndAfterAll {
   def slickRun[R](a: DBIOAction[R, NoStream, Nothing]) = SilckUtils.slickRun(slick.driver.H2Driver)(db)(a)
 
   override def beforeAll() = {
-    slickRun(articleTable.schema.create)
+    slickRun(simpleTable.schema.create)
   }
 
-  "User repo" should "insert into article table" in {
+  "Simple model" should "insert into simple table by annotationed TableQuery" in {
     val simple_1 = Simple(None, "sdfsgewrg", Option("userType"))
-    slickRun(articleTable += simple_1) should be(1)
+    slickRun(simpleTable += simple_1) should be(1)
   }
 
-  "User repos" should "insert into article table" in {
+  "Simple models" should "insert into simple table by annotationed TableQuery" in {
     val simple_1 = Simple(None, "英莉莉", Option("safgregrtgh"))
     val simple_2 = Simple(None, "金闪闪", Option("safgregrtgh"))
-    slickRun(articleTable ++= List(simple_1, simple_2)) should be(Option(2))
-    println(slickRun(articleTable.map(_.nick).result))
+    slickRun(simpleTable ++= List(simple_1, simple_2)) should be(Option(2))
+    println(slickRun(simpleTable.map(_.nick).result))
   }
 }

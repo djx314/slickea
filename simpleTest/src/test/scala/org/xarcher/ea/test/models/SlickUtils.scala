@@ -1,10 +1,7 @@
 package org.xarcher.ea.test.models
 
-import javax.persistence.{Column, Id}
-
 import slick.dbio.{NoStream, DBIOAction}
 
-import scala.annotation.meta.field
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 

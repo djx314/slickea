@@ -7,7 +7,7 @@ import javax.persistence.Id;
 
 @Entity
 @Table(name = "servant")
-class Servant {
+public class Servant {
 
   @Id
   @Column(name = "s_id")
@@ -42,6 +42,7 @@ class Servant {
     this.name = name;
   }
 
+  @Column(name = "s_master")
   public String getMaster() {
     return master;
   }

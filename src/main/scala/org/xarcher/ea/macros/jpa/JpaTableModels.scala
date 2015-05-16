@@ -8,7 +8,7 @@ import scala.reflect.runtime.universe._
  * Created by djx314 on 2015/5/5.
  */
 
-trait GenerateColunm {
+trait JpaTableModels {
 
   val c: Context
   import c.universe._

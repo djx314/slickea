@@ -1,7 +1,7 @@
 package org.xarcher.ea.test.models
 
 import org.h2.jdbcx.JdbcDataSource
-import org.xarcher.ea.macros.jpa.JpaGenerate
+import org.xarcher.ea.macros.jpa.JpaTableGenerate
 
 import slick.driver.H2Driver.api._
 
@@ -9,7 +9,7 @@ import slick.driver.H2Driver.api._
  * Created by djx314 on 2015/5/5.
  */
 
-@JpaGenerate[Simple](tableName = "miaomiaomiaomiao")
+@JpaTableGenerate[Simple](tableName = "miaomiaomiaomiao")
 class SimpleTable()
 
 import org.scalatest._

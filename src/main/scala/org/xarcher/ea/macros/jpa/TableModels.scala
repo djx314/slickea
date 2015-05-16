@@ -1,4 +1,4 @@
-package org.xarcher.ea.jpa.macros
+package org.xarcher.ea.macros.jpa
 
 import scala.reflect.macros.blackbox.Context
 import scala.reflect._

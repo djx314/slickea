@@ -1,6 +1,6 @@
 package org.xarcher.ea.test.models
 
-import org.xarcher.ea.jpa.macros.JpaGenerate
+import org.xarcher.ea.macros.jpa.JpaGenerate
 
 import profile.api._
 

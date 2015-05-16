@@ -1,7 +1,7 @@
 package org.xarcher.ea.test.models
 
 import org.h2.jdbcx.JdbcDataSource
-import org.xarcher.ea.jpa.macros.JpaGenerate
+import org.xarcher.ea.macros.jpa.JpaGenerate
 
 import slick.driver.H2Driver.api._
 

@@ -24,17 +24,13 @@ welcome to build enuma elish !
   )
   .settings(CustomSettings.customSettings: _*)
   .enablePlugins(com.typesafe.sbt.GitBranchPrompt)
-
   .settings(
     name := "slickea",
-
     libraryDependencies ++= Seq(
-      //project dependencies
-      "com.typesafe.slick" %% "slick" % "3.0.0-RC3",
+      "com.typesafe.slick" %% "slick" % "3.0.0",
       "org.scala-lang" % "scala-compiler" % scalaVersion.value
     ),
     libraryDependencies ++= CustomSettings.jpaDependencies,
-
     dependencyOverrides ++= {
       Set(
       )

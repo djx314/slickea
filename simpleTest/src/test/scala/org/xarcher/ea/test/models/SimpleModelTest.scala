@@ -1,9 +1,7 @@
 package org.xarcher.ea.test.models
 
-import javax.persistence.{Column, Id}
 import org.h2.jdbcx.JdbcDataSource
 import org.xarcher.ea.jpa.macros.JpaGenerate
-import scala.annotation.meta.field
 
 import slick.driver.H2Driver.api._
 
@@ -15,7 +13,7 @@ import slick.driver.H2Driver.api._
 class SimpleTable()
 
 import org.scalatest._
-class SimpleTest extends FlatSpec with Matchers with BeforeAndAfterAll {
+class SimpleModelTest extends FlatSpec with Matchers with BeforeAndAfterAll {
 
   lazy val simpleTable = TableQuery[SimpleTable]
 

@@ -12,12 +12,6 @@ trait JpaJavaModels {
   val c: Context
   import c.universe._
 
-  case class TableModels(
-    propertyName: String,
-    propertyType: Type,
-    columnDefName: String,
-    columnName: String,
-    extPro: List[Tree] = Nil
-  )
+
 
 }

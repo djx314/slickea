@@ -17,11 +17,20 @@ class JpaJavaMacroImpl(override val c: Context) extends JpaJavaModels {
 
   def impl(annottees: c.Expr[Any]*): c.Expr[Any] = annottees.map(_.tree) match {
     case (classDecl: ClassDef) :: Nil => {
-      c.Expr(q"class A")
+      c.Expr(genCode(classDecl))
     }
     case decl => {
       c.abort(c.enclosingPosition, "Underlying class must not be top-level and without companion")
     }
+  }
+
+  protected def genCode(classDef: ClassDef) = {
+
+    val q"$mods class $tpname[..$tparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = classDef
+
+    println(tpname)
+    q"class $tpname"
+
   }
 
 }

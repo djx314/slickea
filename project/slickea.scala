@@ -46,7 +46,7 @@ welcome to build enuma elish !
   .settings(
     name := "model4Test",
     libraryDependencies ++= CustomSettings.jpaDependencies
-  )
+  ) dependsOn slickea
 
   lazy val slickeaSimpleTest = Project(
     id = "simpleTest",
@@ -57,7 +57,7 @@ welcome to build enuma elish !
     name := "simpleTest",
     libraryDependencies ++= CustomSettings.testDependencies
   )
-  .settings(CustomSettings.customSettings: _*) dependsOn slickea dependsOn model4Test
+  .settings(CustomSettings.customSettings: _*) dependsOn model4Test
 
   lazy val slickeaFullTest = Project(
     id = "fullTest",
@@ -68,6 +68,6 @@ welcome to build enuma elish !
     name := "fullTest",
     libraryDependencies ++= CustomSettings.testDependencies
   )
-  .settings(CustomSettings.customSettings: _*) dependsOn slickea dependsOn model4Test
+  .settings(CustomSettings.customSettings: _*) dependsOn model4Test
 
 }

@@ -1,9 +1,7 @@
 package org.xarcher.ea.test
 
 import org.scalatest._
-import org.h2.jdbcx.JdbcDataSource
 import org.xarcher.ea.test.models._
-import org.xarcher.ea.test.base.SlickBase
 
 class MacroH2Test extends FlatSpec with Matchers with MacroRepo with BeforeAndAfterAll {
 

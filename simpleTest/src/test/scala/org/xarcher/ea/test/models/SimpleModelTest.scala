@@ -1,7 +1,7 @@
 package org.xarcher.ea.test.models
 
 import org.h2.jdbcx.JdbcDataSource
-import org.xarcher.ea.macros.jpa.JpaTableGenerate
+import org.xarcher.ea.macros.jpa.{JpaJavaGenerate, JpaTableGenerate}
 
 import slick.driver.H2Driver.api._
 
@@ -11,6 +11,9 @@ import slick.driver.H2Driver.api._
 
 @JpaTableGenerate[Simple](tableName = "miaomiaomiaomiao")
 class SimpleTable()
+
+@JpaJavaGenerate[aa]
+class ScalaSimple
 
 import org.scalatest._
 class SimpleModelTest extends FlatSpec with Matchers with BeforeAndAfterAll {

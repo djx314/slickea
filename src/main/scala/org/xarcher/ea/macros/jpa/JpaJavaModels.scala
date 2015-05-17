@@ -21,10 +21,14 @@ trait JpaJavaModels {
 
   lazy val columnInfos = {
 
-    productType.members.collect {
-      case param => {
-        println(param.fullName)
-        println(param.isJava)
+    productType.decls.collect {
+      case param: TermSymbol => {
+        println(s"param.isAccessor:${param.isAccessor}")
+        println(s"param.isMethod:${param.isMethod}")
+        println(s"param.fullName:${param.fullName}")
+        println(s"param.isGetter:${param.isGetter}")
+        println(s"param.isSetter:${param.isSetter}")
+        //println(param.isJava)
         println(param.annotations)
 
       }

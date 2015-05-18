@@ -6,35 +6,39 @@ package org.xarcher.ea.macros.jpa
 
 import scala.reflect.macros.blackbox.Context
 import scala.language.experimental.macros
+import collection.JavaConversions._
 
 trait JpaJavaModels {
+
+  type JavaAnnotation = java.lang.annotation.Annotation
 
   val c: Context
   import c.universe._
 
+  case class ClassInfo(
+    annotations: List[JavaAnnotation]
+  )
+
+  case class AnnotationInfo(
+    fullName: String,
+    info: List[AnnotationProInfo]
+  )
+
+  case class AnnotationProInfo(
+    propertyName: String,
+    value: Any
+  )
+
   lazy val (productType, annotationParams) = c.macroApplication match {
-    case  q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" =>
+    case q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" =>
       (c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe, Nil)
-    case  q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" =>
+    case q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" =>
       (c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe, params)
   }
 
   lazy val columnInfos = {
 
-    productType.decls.collect {
-      case param: TermSymbol => {
-        println(s"param.isAccessor:${param.isAccessor}")
-        println(s"param.isMethod:${param.isMethod}")
-        println(s"param.fullName:${param.fullName}")
-        println(s"param.isGetter:${param.isGetter}")
-        println(s"param.isSetter:${param.isSetter}")
-        //println(param.isJava)
-        println(param.annotations)
-
-      }
-    }
-
-    //println(productType.members.mkString("\n"))
+    productType.typeSymbol.annotations
 
   }
 

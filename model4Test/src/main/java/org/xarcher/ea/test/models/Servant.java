@@ -14,7 +14,7 @@ public class Servant {
   private Long id;
 
   @Column(name = "true_name")
-  String name;
+  protected String name;
 
   private String master;
 

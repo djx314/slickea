@@ -12,8 +12,11 @@ import slick.driver.H2Driver.api._
 @JpaTableGenerate[Simple](tableName = "miaomiaomiaomiao")
 class SimpleTable()
 
-@JpaJavaGenerate[aa]
+@JpaJavaGenerate[Servant]
 class ScalaSimple
+
+/*@JpaJavaGenerate[aa]
+class ScalaSimple1111111*/
 
 import org.scalatest._
 class SimpleModelTest extends FlatSpec with Matchers with BeforeAndAfterAll {

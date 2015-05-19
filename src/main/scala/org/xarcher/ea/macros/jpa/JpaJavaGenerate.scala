@@ -28,10 +28,9 @@ class JpaJavaMacroImpl(override val c: Context) extends JpaJavaModels {
 
     val q"$mods class $tpname[..$tparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = classDef
 
+    // ..$columnInfos
     val caseM =
-      q"""
-         ..$columnInfos
-         case class $tpname()"""
+      q"""case class $tpname()"""
 
     println(caseM)
     caseM

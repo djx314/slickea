@@ -38,7 +38,9 @@ trait JpaJavaModels {
 
   lazy val columnInfos = {
 
-    //productType.typeSymbol.annotations.map(s => q"""@$s""": Tree)
+    val q"$mods type $name[..$tparams] >: $low <: $high" = internal.typeDef(productType.typeSymbol)
+    println(mods)
+    productType.typeSymbol.annotations
 
   }
 

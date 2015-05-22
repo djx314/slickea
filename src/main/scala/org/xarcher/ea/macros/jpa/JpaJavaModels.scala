@@ -36,8 +36,24 @@ trait JpaJavaModels {
       (c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe, params)
   }
 
+  lazy val (aa, bb) = c.macroApplication match {
+    case q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" =>
+      //(c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe, Nil)
+      (paramTypeTree, Nil)
+    case q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" =>
+      //(c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe, params)
+      (paramTypeTree, methodParams)
+  }
+
   lazy val columnInfos = {
-    productType.typeSymbol.annotations.map(_.tree)
+    val q"""$mods type $name[..$tparams] >: $low <: $high""" = internal.typeDef(productType.typeSymbol)
+    //println(productType.declarations.map(_.annotations))
+    val classSymbol = productType.typeSymbol.asClass
+
+    //val q"$cmods class $cpname[..$cparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = productType.typeSymbol.tpe
+
+    //println(low)
+    //println(high)
   }
 
   lazy val typeAnnotations = productType.typeSymbol.annotations

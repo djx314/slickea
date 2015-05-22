@@ -27,7 +27,7 @@ class JpaJavaMacroImpl(override val c: Context) extends JpaJavaModels {
   protected def genCode(classDef: ClassDef) = {
 
     val q"$mods class $tpname[..$tparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = classDef
-
+    columnInfos
     val typeAnnotationsTree = typeAnnotations.map(_.tree)
 
     val caseM =

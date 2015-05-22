@@ -14,7 +14,9 @@ class aa {
   @Column(name = "aabbcc")
   private var aabb = 2
 
-  def zzccdd_= { aabb = 3 }
+  def ccdd_= { aabb = 3 }
+
+  val eeff = 2333
 
 }
 

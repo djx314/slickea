@@ -13,6 +13,8 @@ public class Servant {
   @Column(name = "s_id")
   private Long id;
 
+  String bb;
+
   @Column(name = "true_name")
   protected String name;
 

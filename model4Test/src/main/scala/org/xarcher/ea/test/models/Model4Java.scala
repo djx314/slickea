@@ -17,3 +17,6 @@ class aa {
   def zzccdd_= { aabb = 3 }
 
 }
+
+@JpaJavaGenerate[Servant]
+class ScalaServant

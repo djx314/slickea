@@ -27,15 +27,30 @@ class JpaJavaMacroImpl(override val c: Context) extends JpaJavaModels {
   protected def genCode(classDef: ClassDef) = {
 
     val q"$mods class $tpname[..$tparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = classDef
-    columnInfos
+
+    val colunmParams = columnInfos.map { case (key, annotations) => genColumnQ(key, annotations) }
     val typeAnnotationsTree = typeAnnotations.map(_.tree)
 
     val caseM =
-      q"""@..$typeAnnotationsTree case class  $tpname()"""
+      q"""@..$typeAnnotationsTree case class  $tpname(..$colunmParams)"""
 
     //println(caseM)
     caseM
 
+  }
+
+  def genColumnQ(key: String, annotations: List[MacroAnnoatation]) = {
+    //val annotationsTree = annotations.map(s => q"""@${s.tree} @_root_.scala.annotation.meta.field""")
+    val annoTree = annotations.map(s => {
+      println(s.javaArgs)
+      val tree = s.tree
+      //val bb = q"""@(javax.persistence.Column@_root_.scala.annotation.meta.field)"""
+      //println(bb)
+    })
+    val aa = q"""@(javax.persistence.Column@_root_.scala.annotation.meta.field)(name = "greger") val `${TermName(key)}`: String"""
+    //val aa = q"""@..${annotations.map(s => { q"""(${s.tpe.typeSymbol.fullName}: @_root_.scala.annotation.meta.field)""" })} val `${TermName(key)}`: String"""
+    println(aa)
+    aa
   }
 
 }

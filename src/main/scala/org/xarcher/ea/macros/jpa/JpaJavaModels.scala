@@ -10,24 +10,13 @@ import collection.JavaConversions._
 
 trait JpaJavaModels {
 
-  type JavaAnnotation = java.lang.annotation.Annotation
-
   val c: Context
   import c.universe._
 
-  case class ClassInfo(
-    annotations: List[JavaAnnotation]
-  )
+  type JavaAnnotation = java.lang.annotation.Annotation
+  type MacroAnnoatation = c.universe.Annotation
 
-  case class AnnotationInfo(
-    fullName: String,
-    info: List[AnnotationProInfo]
-  )
-
-  case class AnnotationProInfo(
-    propertyName: String,
-    value: Any
-  )
+  println(c.macroApplication)
 
   lazy val (productType, annotationParams) = c.macroApplication match {
     case q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" =>
@@ -36,29 +25,58 @@ trait JpaJavaModels {
       (c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe, params)
   }
 
-  lazy val (aa, bb) = c.macroApplication match {
-    case q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" =>
-      //(c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe, Nil)
-      (paramTypeTree, Nil)
-    case q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" =>
-      //(c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe, params)
-      (paramTypeTree, methodParams)
-  }
-
   lazy val columnInfos = {
-    val q"""$mods type $name[..$tparams] >: $low <: $high""" = internal.typeDef(productType.typeSymbol)
-    //println(productType.declarations.map(_.annotations))
-    val classSymbol = productType.typeSymbol.asClass.alternatives
-    println(classSymbol)
-    val bbcc = c.typecheck(q"(??? : $aa)").tpe
-    //println(productType.members)
 
-    //println(productType.decls)
+    //val q"""$mods type $name[..$tparams] >: $low <: $high""" = internal.typeDef(productType.typeSymbol)
+    def extractTermName(methodSymbol: Name) = {
+      val TermName(s) = methodSymbol
+      s
+    }
 
-    //val q"$cmods class $cpname[..$cparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = productType.typeSymbol.tpe
+    def methodNameDeal(name: String): String = {
+      if (name startsWith "get") {
+        val notGetName = name.replace("get", "")
+        notGetName.zipWithIndex.map {
+          case (s, 0) => s.toLower
+          case (s, _) => s
+        }.mkString
+      } else if (name startsWith "set") {
+        val notSetname = name.replace("set", "")
+        notSetname.zipWithIndex.map {
+          case (s, 0) => s.toLower
+          case (s, _) => s
+        }.mkString
+      } else {
+        throw new Exception(s"Method name: $name is not a getter or setter method.")
+      }
+    }
 
-    //println(low)
-    //println(high)
+    val members = productType.members.toList
+
+    val memGroups = members.groupBy{
+
+      case methodSymbol: MethodSymbol if {
+        val methodName = extractTermName(methodSymbol.name)
+        (methodName startsWith "set") || (methodName startsWith "get")
+      } => methodNameDeal(extractTermName(methodSymbol.name))
+
+      case methodSymbol: MethodSymbol => extractTermName(methodSymbol.name)
+
+      case termSymbol: TermSymbol => extractTermName(termSymbol.name)
+
+    }
+
+
+    val propsMap = memGroups.filter{ case (key, data) => {
+      val names = data.map(_.name).map{ case TermName(s) => s }
+      names.exists(_.startsWith("set")) || names.exists(_.startsWith("get"))
+    } }
+
+    for ((key, data) <- propsMap) yield {
+      val annotations = data.flatMap(_.annotations)
+      (key, annotations)
+    }
+
   }
 
   lazy val typeAnnotations = productType.typeSymbol.annotations

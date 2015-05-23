@@ -11,21 +11,22 @@ public class Servant {
 
   @Id
   @Column(name = "s_id")
-  private Long id;
-
-  String bb;
+  Long id;
 
   @Column(name = "true_name")
   protected String name;
 
-  private String master;
+  String master;
 
-  private String phantasm;
+  String phantasm;
 
   public Servant(String name, String master, String phantasm) {
     this.name = name;
     this.master = master;
     this.phantasm = phantasm;
+  }
+
+  public Servant() {
   }
 
   public Long getId() {

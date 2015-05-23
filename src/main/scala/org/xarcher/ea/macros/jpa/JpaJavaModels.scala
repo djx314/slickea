@@ -48,7 +48,12 @@ trait JpaJavaModels {
   lazy val columnInfos = {
     val q"""$mods type $name[..$tparams] >: $low <: $high""" = internal.typeDef(productType.typeSymbol)
     //println(productType.declarations.map(_.annotations))
-    val classSymbol = productType.typeSymbol.asClass
+    val classSymbol = productType.typeSymbol.asClass.alternatives
+    println(classSymbol)
+    val bbcc = c.typecheck(q"(??? : $aa)").tpe
+    //println(productType.members)
+
+    //println(productType.decls)
 
     //val q"$cmods class $cpname[..$cparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = productType.typeSymbol.tpe
 

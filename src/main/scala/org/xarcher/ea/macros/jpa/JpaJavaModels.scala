@@ -4,11 +4,12 @@ package org.xarcher.ea.macros.jpa
  * Created by djx314 on 15-5-17.
  */
 
+import org.xarcher.ea.macros.common.MacroUtils
+
 import scala.reflect.macros.blackbox.Context
 import scala.language.experimental.macros
-import collection.JavaConversions._
 
-trait JpaJavaModels {
+trait JpaJavaModels extends MacroUtils {
 
   val c: Context
   import c.universe._
@@ -18,18 +19,14 @@ trait JpaJavaModels {
 
   lazy val (productType, annotationParams) = c.macroApplication match {
     case q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" =>
-      (c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe, Nil)
+      (typeFromParamTree(paramTypeTree), Nil)
     case q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" =>
-      (c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe, params)
+      (typeFromParamTree(paramTypeTree), params)
   }
 
   lazy val columnInfos = {
 
     //val q"""$mods type $name[..$tparams] >: $low <: $high""" = internal.typeDef(productType.typeSymbol)
-    def extractTermName(methodSymbol: Name) = {
-      val TermName(s) = methodSymbol
-      s
-    }
 
     def methodNameDeal(name: String): String = {
       if (name startsWith "get") {

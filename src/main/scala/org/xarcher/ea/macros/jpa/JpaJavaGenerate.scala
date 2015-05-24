@@ -43,7 +43,7 @@ class JpaJavaMacroImpl(override val c: Context) extends JpaJavaModels {
 
     val annoTree = annotations.map(s => {
       val tree = s.tree
-      val annatationType = c.typecheck(tree.duplicate, c.TYPEmode).tpe
+      val annatationType = typeFromParamTree(tree)
       q"""new ($annatationType @_root_.scala.annotation.meta.field())(..${tree.children.tail})"""
     })
 

@@ -79,11 +79,7 @@ trait JpaJavaModels {
         })
 
         val returnType = getMethod.get.asMethod.returnType
-        val dealedReturnType = if (returnType <:< c.weakTypeOf[java.lang.Long]) {
-          c.weakTypeOf[scala.Long]
-        } else {
-          returnType
-        }
+        val dealedReturnType = modelTypeMap get returnType getOrElse returnType
         (key, data, dealedReturnType)
 
       }
@@ -97,5 +93,11 @@ trait JpaJavaModels {
   }
 
   lazy val typeAnnotations = productType.typeSymbol.annotations
+
+  val modelTypeMap = Map(
+    weakTypeOf[java.lang.Long] -> weakTypeOf[scala.Long],
+    weakTypeOf[java.lang.Integer] -> weakTypeOf[scala.Int],
+    weakTypeOf[java.lang.Boolean] -> weakTypeOf[scala.Boolean]
+  )
 
 }

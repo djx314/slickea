@@ -16,8 +16,6 @@ trait JpaJavaModels {
   type JavaAnnotation = java.lang.annotation.Annotation
   type MacroAnnoatation = c.universe.Annotation
 
-  println(c.macroApplication)
-
   lazy val (productType, annotationParams) = c.macroApplication match {
     case q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" =>
       (c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe, Nil)
@@ -67,14 +65,33 @@ trait JpaJavaModels {
     }
 
 
-    val propsMap = memGroups.filter{ case (key, data) => {
+    val infoMap = memGroups.filter{ case (key, data) => {
       val names = data.map(_.name).map{ case TermName(s) => s }
-      names.exists(_.startsWith("set")) || names.exists(_.startsWith("get"))
+      names.exists(_.startsWith("set")) && names.exists(_.startsWith("get"))
     } }
 
-    for ((key, data) <- propsMap) yield {
+    val propsMap = infoMap.map {
+      case (key, data) => {
+
+        val getMethod = data.find(s => {
+          val TermName(name) = s.name
+          name startsWith "get"
+        })
+
+        val returnType = getMethod.get.asMethod.returnType
+        val dealedReturnType = if (returnType <:< c.weakTypeOf[java.lang.Long]) {
+          c.weakTypeOf[scala.Long]
+        } else {
+          returnType
+        }
+        (key, data, dealedReturnType)
+
+      }
+    }
+
+    for ((key, data, returnType) <- propsMap) yield {
       val annotations = data.flatMap(_.annotations)
-      (key, annotations)
+      (key, annotations, returnType)
     }
 
   }

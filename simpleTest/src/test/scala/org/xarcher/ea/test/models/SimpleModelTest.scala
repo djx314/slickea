@@ -1,7 +1,8 @@
 package org.xarcher.ea.test.models
 
 import org.h2.jdbcx.JdbcDataSource
-import org.xarcher.ea.jpa.macros.JpaGenerate
+import org.slf4j.LoggerFactory
+import org.xarcher.ea.macros.jpa.{JpaJavaGenerate, JpaTableGenerate}
 
 import slick.driver.H2Driver.api._
 
@@ -9,13 +10,22 @@ import slick.driver.H2Driver.api._
  * Created by djx314 on 2015/5/5.
  */
 
-@JpaGenerate[Simple](tableName = "miaomiaomiaomiao")
-class SimpleTable()
+@JpaTableGenerate[Simple](tableName = "miaomiaomiaomiao")
+class SimpleTable
+
+@JpaTableGenerate[ScalaServant](tableName = "hahahahaha")
+class ScalaServantTable
+
+@JpaJavaGenerate[aa]
+class ScalaSimple1111111
 
 import org.scalatest._
 class SimpleModelTest extends FlatSpec with Matchers with BeforeAndAfterAll {
 
-  lazy val simpleTable = TableQuery[SimpleTable]
+  val logger = LoggerFactory.getLogger(getClass)
+
+  val simpleTable = TableQuery[SimpleTable]
+  val scalaServantTable = TableQuery[ScalaServantTable]
 
   lazy val db = {
     val datasource = new JdbcDataSource()
@@ -26,7 +36,7 @@ class SimpleModelTest extends FlatSpec with Matchers with BeforeAndAfterAll {
   def slickRun[R](a: DBIOAction[R, NoStream, Nothing]) = SilckUtils.slickRun(slick.driver.H2Driver)(db)(a)
 
   override def beforeAll() = {
-    slickRun(simpleTable.schema.create)
+    slickRun((simpleTable.schema ++ scalaServantTable.schema).create)
   }
 
   "Simple model" should "insert into simple table by annotationed TableQuery" in {
@@ -40,4 +50,12 @@ class SimpleModelTest extends FlatSpec with Matchers with BeforeAndAfterAll {
     slickRun(simpleTable ++= List(simple_1, simple_2)) should be(Option(2))
     println(slickRun(simpleTable.map(_.nick).result))
   }
+
+  "ScalaServant" should "compile success" in {
+    val aa = for (servantTable <- scalaServantTable) yield {
+      (servantTable.id, servantTable.name, servantTable.phantasm, servantTable.master)
+    }
+    println(slickRun(aa.result))
+  }
+
 }

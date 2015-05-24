@@ -1,7 +1,6 @@
 package org.xarcher.ea.test.models
 
 import java.sql.Timestamp
-import java.util.Date
 import org.xarcher.ea.test.base.SlickBase
 
 trait Repo extends SlickBase {

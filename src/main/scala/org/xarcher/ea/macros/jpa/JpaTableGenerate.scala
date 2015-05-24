@@ -1,14 +1,14 @@
-package org.xarcher.ea.jpa.macros
+package org.xarcher.ea.macros.jpa
 
 import scala.reflect.macros.blackbox.Context
 import scala.language.experimental.macros
 import scala.annotation.StaticAnnotation
 
-class JpaGenerate[T](tableName: String = "") extends StaticAnnotation {
+class JpaTableGenerate[T](tableName: String = "") extends StaticAnnotation {
   def macroTransform(annottees: Any*): Any = macro JpaTableMacroImpl.impl
 }
 
-class JpaTableMacroImpl(override val c: Context) extends GenerateColunm {
+class JpaTableMacroImpl(override val c: Context) extends JpaTableModels {
 
   import c.universe._
 

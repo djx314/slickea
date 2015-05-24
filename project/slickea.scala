@@ -22,7 +22,6 @@ welcome to build enuma elish !
     base = file("."),
     settings = Defaults.coreDefaultSettings
   )
-  .settings(CustomSettings.customSettings: _*)
   .enablePlugins(com.typesafe.sbt.GitBranchPrompt)
   .settings(
     name := "slickea",
@@ -36,17 +35,19 @@ welcome to build enuma elish !
       )
     }
   )
+  .settings(CustomSettings.customSettings: _*)
 
   lazy val model4Test = Project(
     id = "model4Test",
     base = file("./model4Test"),
     settings = Defaults.coreDefaultSettings
   )
-  .settings(CustomSettings.customSettings: _*)
   .settings(
     name := "model4Test",
-    libraryDependencies ++= CustomSettings.jpaDependencies
+    libraryDependencies ++= CustomSettings.jpaDependencies,
+    compileOrder in Compile := CompileOrder.JavaThenScala
   )
+  .settings(CustomSettings.customSettings: _*) dependsOn slickea
 
   lazy val slickeaSimpleTest = Project(
     id = "simpleTest",
@@ -57,7 +58,7 @@ welcome to build enuma elish !
     name := "simpleTest",
     libraryDependencies ++= CustomSettings.testDependencies
   )
-  .settings(CustomSettings.customSettings: _*) dependsOn slickea dependsOn model4Test
+  .settings(CustomSettings.customSettings: _*) dependsOn model4Test
 
   lazy val slickeaFullTest = Project(
     id = "fullTest",
@@ -68,6 +69,6 @@ welcome to build enuma elish !
     name := "fullTest",
     libraryDependencies ++= CustomSettings.testDependencies
   )
-  .settings(CustomSettings.customSettings: _*) dependsOn slickea dependsOn model4Test
+  .settings(CustomSettings.customSettings: _*) dependsOn model4Test
 
 }

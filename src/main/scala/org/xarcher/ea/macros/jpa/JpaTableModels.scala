@@ -1,4 +1,4 @@
-package org.xarcher.ea.jpa.macros
+package org.xarcher.ea.macros.jpa
 
 import scala.reflect.macros.blackbox.Context
 import scala.reflect._
@@ -8,7 +8,7 @@ import scala.reflect.runtime.universe._
  * Created by djx314 on 2015/5/5.
  */
 
-trait GenerateColunm {
+trait JpaTableModels {
 
   val c: Context
   import c.universe._

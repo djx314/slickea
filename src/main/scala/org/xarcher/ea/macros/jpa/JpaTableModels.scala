@@ -1,5 +1,7 @@
 package org.xarcher.ea.macros.jpa
 
+import org.xarcher.ea.macros.common.MacroUtils
+
 import scala.reflect.macros.blackbox.Context
 import scala.reflect._
 import scala.language.experimental.macros
@@ -8,7 +10,7 @@ import scala.reflect.runtime.universe._
  * Created by djx314 on 2015/5/5.
  */
 
-trait JpaTableModels {
+trait JpaTableModels extends MacroUtils {
 
   val c: Context
   import c.universe._
@@ -23,9 +25,9 @@ trait JpaTableModels {
 
   lazy val (productType, annotationParams) = c.macroApplication match {
     case  q"new $annotationTpe[$paramTypeTree]().$method(..$methodParams)" =>
-      (c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe, Nil)
+      (typeFromParamTree(paramTypeTree), Nil)
     case  q"new $annotationTpe[$paramTypeTree](..$params).$method(..$methodParams)" =>
-      (c.typecheck(paramTypeTree.duplicate, c.TYPEmode).tpe, params)
+      (typeFromParamTree(paramTypeTree), params)
   }
 
   lazy val columnInfos = {

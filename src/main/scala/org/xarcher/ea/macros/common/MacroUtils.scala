@@ -13,7 +13,7 @@ trait MacroUtils {
 
   def typeFromParamTree(tree: Tree) = c.typecheck(tree.duplicate, c.TYPEmode).tpe
 
-  def extractTermName(methodSymbol: TermName) = {
+  def extractTermName(methodSymbol: Name) = {
     val TermName(s) = methodSymbol
     s
   }

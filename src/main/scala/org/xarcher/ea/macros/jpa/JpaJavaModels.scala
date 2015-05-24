@@ -71,8 +71,7 @@ trait JpaJavaModels extends MacroUtils {
       case (key, data) => {
 
         val getMethod = data.find(s => {
-          val TermName(name) = s.name
-          name startsWith "get"
+          extractTermName(s.name: Name) startsWith "get"
         })
 
         val returnType = getMethod.get.asMethod.returnType

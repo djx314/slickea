@@ -91,8 +91,13 @@ trait JpaJavaModels extends MacroUtils {
   lazy val typeAnnotations = productType.typeSymbol.annotations
 
   val modelTypeMap = Map(
-    weakTypeOf[java.lang.Long] -> weakTypeOf[scala.Long],
+    weakTypeOf[java.lang.Byte] -> weakTypeOf[scala.Byte],
+    weakTypeOf[java.lang.Short] -> weakTypeOf[scala.Short],
     weakTypeOf[java.lang.Integer] -> weakTypeOf[scala.Int],
+    weakTypeOf[java.lang.Long] -> weakTypeOf[scala.Long],
+    weakTypeOf[java.lang.Character] -> weakTypeOf[scala.Char],
+    weakTypeOf[java.lang.Float] -> weakTypeOf[scala.Float],
+    weakTypeOf[java.lang.Double] -> weakTypeOf[scala.Double],
     weakTypeOf[java.lang.Boolean] -> weakTypeOf[scala.Boolean]
   )
 

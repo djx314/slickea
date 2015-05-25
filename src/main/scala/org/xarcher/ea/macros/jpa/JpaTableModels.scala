@@ -3,9 +3,8 @@ package org.xarcher.ea.macros.jpa
 import org.xarcher.ea.macros.common.MacroUtils
 
 import scala.reflect.macros.blackbox.Context
-import scala.reflect._
 import scala.language.experimental.macros
-import scala.reflect.runtime.universe._
+import scala.language.postfixOps
 /**
  * Created by djx314 on 2015/5/5.
  */
@@ -73,13 +72,31 @@ trait JpaTableModels extends MacroUtils {
 
   lazy val getTableName: String = {
 
-    val paramTableName = for {
-      q"$fname = $fv" <- annotationParams if fname.toString.trim == "tableName"
-      Literal(Constant(tbName: String)) <- fv if tbName != ""
-    } yield tbName
+    val typeName = productType.typeSymbol.name.decodedName.toString.trim
+    val fullTypeName = productType.typeSymbol.fullName
 
-    paramTableName.headOption.getOrElse(productType.typeSymbol.name.decodedName.toString)
+    val entity = for {
+      annotation <- productTypeAnnotations if annotation.tree.tpe <:< c.weakTypeOf[javax.persistence.Entity]
+    } yield annotation
+    if (entity.headOption.isEmpty) c.abort(c.enclosingPosition, s"class ${fullTypeName} must has a javax.persistence.Entity annotation.")
+
+    val tableNames = for {
+      annotation <- productTypeAnnotations if annotation.tree.tpe <:< c.weakTypeOf[javax.persistence.Table]
+      q"""name = ${Literal(Constant(tbName: String))}""" <- annotation.tree.children.tail if tbName != ""
+    } yield tbName
+    val tableAnnotationTbNameOpt = tableNames.headOption
+
+    val paramTableName = for {
+      q"""tableName = ${Literal(Constant(tbName: String))}""" <- annotationParams if tbName != ""
+    } yield tbName
+    val scalaAnnotationTbNameOpt = paramTableName.headOption
+
+    val tbName = (scalaAnnotationTbNameOpt :: tableAnnotationTbNameOpt :: Option(typeName) :: Nil) collectFirst { case Some(s) => s } head
+
+    tbName
 
   }
+
+  lazy val productTypeAnnotations = productType.typeSymbol.annotations
 
 }

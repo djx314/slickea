@@ -10,7 +10,7 @@ import slick.driver.H2Driver.api._
  * Created by djx314 on 2015/5/5.
  */
 
-@JpaTableGenerate[Simple](tableName = "miaomiaomiaomiao")
+@JpaTableGenerate[Simple]
 class SimpleTable
 
 @JpaTableGenerate[ScalaServant](tableName = "hahahahaha")

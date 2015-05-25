@@ -28,8 +28,8 @@ class JpaJavaMacroImpl(override val c: Context) extends JpaJavaModels {
 
     val q"$mods class $tpname[..$tparams] $ctorMods(...$paramss) extends { ..$earlydefns } with ..$parents { $self => ..$stats }" = classDef
 
-    val colunmParams = columnInfos.map { case (key, annotations, returnType) => genColumnQ(key, annotations, returnType) }
-    val typeAnnotationsTree = typeAnnotations.map(_.tree)
+    val colunmParams = columnInfos map { case (key, annotations, returnType) => genColumnQ(key, annotations, returnType) }
+    val typeAnnotationsTree = typeAnnotations map (_.tree)
 
     val caseM =
       q"""@..$typeAnnotationsTree case class  $tpname(..$colunmParams)"""
@@ -44,7 +44,7 @@ class JpaJavaMacroImpl(override val c: Context) extends JpaJavaModels {
     val annoTree = annotations.map(s => {
       val tree = s.tree
       val annatationType = typeFromParamTree(tree)
-      q"""new ($annatationType @_root_.scala.annotation.meta.field())(..${tree.children.tail})"""
+      q"""new ($annatationType@_root_.scala.annotation.meta.field())(..${tree.children.tail})"""
     })
 
     q"""@..$annoTree val `${TermName(key)}`: $returnType"""

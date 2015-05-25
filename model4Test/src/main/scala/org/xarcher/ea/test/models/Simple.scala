@@ -2,9 +2,11 @@ package org.xarcher.ea.test.models
 
 import java.sql.Timestamp
 import java.util.Date
-import javax.persistence.{Entity, Column, Id}
+import javax.persistence.{Table, Entity, Column, Id}
 import scala.annotation.meta.field
 
+@Entity
+@Table(name = "it_s_so_simple")
 case class Simple(
   @(Id@field)
   id: Option[Long],

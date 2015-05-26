@@ -11,7 +11,7 @@ public class Servant {
 
   @Id
   @Column(name = "s_id")
-  Long id;
+  long id;
 
   @Column(name = "true_name")
   protected String name;
@@ -20,20 +20,24 @@ public class Servant {
 
   String phantasm;
 
-  public Servant(String name, String master, String phantasm) {
+  @Column(name = "how_old")
+  Integer age;
+
+  public Servant(String name, String master, String phantasm, Integer age) {
     this.name = name;
     this.master = master;
     this.phantasm = phantasm;
+    this.age = age;
   }
 
   public Servant() {
   }
 
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(long id) {
     this.id = id;
   }
 
@@ -62,4 +66,11 @@ public class Servant {
     this.phantasm = phantasm;
   }
 
+  public Integer getAge() {
+    return age;
+  }
+
+  public void setAge(Integer age) {
+    this.age = age;
+  }
 }

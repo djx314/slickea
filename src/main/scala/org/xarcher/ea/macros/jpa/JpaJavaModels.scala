@@ -75,7 +75,11 @@ trait JpaJavaModels extends MacroUtils {
         })
 
         val returnType = getMethod.get.asMethod.returnType
-        val dealedReturnType = modelTypeMap get returnType getOrElse returnType
+
+        val dealedReturnType = (for {
+          (key, value) <- modelTypeMap if returnType =:= key
+        } yield value).headOption getOrElse returnType
+
         (key, data, dealedReturnType)
 
       }

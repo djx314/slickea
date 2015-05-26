@@ -78,7 +78,7 @@ trait JpaTableModels extends MacroUtils {
     val entity = for {
       annotation <- productTypeAnnotations if annotation.tree.tpe <:< c.weakTypeOf[javax.persistence.Entity]
     } yield annotation
-    if (entity.headOption.isEmpty) c.abort(c.enclosingPosition, s"class ${fullTypeName} must has a javax.persistence.Entity annotation.")
+    if (entity.isEmpty) c.abort(c.enclosingPosition, s"class ${fullTypeName} must has a javax.persistence.Entity annotation.")
 
     val tableNames = for {
       annotation <- productTypeAnnotations if annotation.tree.tpe <:< c.weakTypeOf[javax.persistence.Table]

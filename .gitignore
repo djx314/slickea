@@ -22,3 +22,4 @@ project/plugins/project/
 /sbt.bat
 .idea
 /bin/
+/fullTest/bin/
